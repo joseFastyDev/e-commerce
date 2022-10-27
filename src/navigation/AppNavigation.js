@@ -4,10 +4,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import AwesomeIcon from "react-native-vector-icons/FontAwesome";
 import colors from '../styles/colors';
+import AccountStack from "./AccountStack";
 import Home from '../screens/Home';
 import Favorites from '../screens/Favorites';
 import Cart from '../screens/Cart';
-import Account from '../screens/Account';
+
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -18,7 +19,7 @@ export default function AppNavigation() {
     <NavigationContainer>
         <Tab.Navigator
             barStyle={styles.navigation}
-            screenOptions={( route ) => ({
+            screenOptions={({ route }) => ({
                 tabBarIcon: (routeStatus) => {
                     return setIcon(route, routeStatus);
                 }
@@ -47,7 +48,7 @@ export default function AppNavigation() {
             />
             <Tab.Screen 
                 name="account"
-                component={Account}
+                component={AccountStack}
                 options={{
                     title: "Mi cuenta",
                 }}
@@ -64,8 +65,18 @@ function setIcon(route, routeStatus) {
         case "home":
             iconName = "home";
             break;
+        case "favorites":
+            iconName = "heart";
+            break;
+        case "cart":
+            iconName = "shopping-cart";
+            break;
+        case "account":
+            iconName = "bars";
+            break;
         default:
             break;
+
     }
     return <AwesomeIcon name={iconName} style={styles.icon} />
 }
