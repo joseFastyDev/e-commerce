@@ -52,13 +52,13 @@ export default function Menu() {
                 title="Cambiar contraseña"
                 description="Cambia la contraseña de tu cuenta"
                 left={(props) => <List.Icon {...props} icon="key" />}
-                onPress={() => console.log("Ir a cambiar la contraseña")}
+                onPress={() => navigation.navigate("change-password")}
             />
             <List.Item 
                 title="Mis direcciones"
                 description="Administra tus direcciones de envío"
                 left={(props) => <List.Icon {...props} icon="map" />}
-                onPress={() => console.log("Ir a cambiar direcciones")}
+                onPress={() => navigation.navigate("addresses")}
             />
         </List.Section>
         <List.Section>
