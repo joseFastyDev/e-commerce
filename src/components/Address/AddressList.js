@@ -2,10 +2,40 @@ import React from "react";
 import { StyleSheet, View, Text, Alert } from "react-native";
 import { Button } from "react-native-paper";
 import { map } from "lodash";
+import useAuth from "../../hooks/useAuth";
 import { formStyle } from "../../styles";
+import { deleteAddressApi } from "../../api/address";
 
 export default function AddressList(props) {
-  const { addresses } = props;
+  const { addresses, setReloadAdress } = props;
+  const { auth } = useAuth();
+
+  const deleteAddressAlert = (address) => {
+    Alert.alert(
+      "Eliminando dirección",
+      `¿Estás seguro de que quieres eliminar la dirección ${address.title}?`,
+      [
+        {
+          text: "NO",
+        },
+        {
+          text: "SI",
+          onPress: () => deleteAddress(address._id),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const deleteAddress = async (idAddress) => {
+    try {
+      await deleteAddressApi(auth, idAddress);
+      setReloadAdress(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {map(addresses, (address) => (
@@ -24,7 +54,11 @@ export default function AddressList(props) {
             <Button mode="contained" style={formStyle.btnSuccess}>
               Editar
             </Button>
-            <Button mode="contained" style={formStyle.btnSuccess}>
+            <Button
+              mode="contained"
+              style={formStyle.btnSuccess}
+              onPress={() => deleteAddressAlert(address)}
+            >
               Eliminar
             </Button>
           </View>

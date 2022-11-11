@@ -16,16 +16,19 @@ import useAuth from "../../hooks/useAuth";
 
 export default function Addresses() {
   const [addresses, setAddresses] = useState(null);
+  const [reloadAddress, setReloadAdress] = useState(false);
   const { auth } = useAuth();
   const navigation = useNavigation();
 
   useFocusEffect(
     useCallback(() => {
+      setAddresses(null);
       (async () => {
         const response = await getAddressesApi(auth);
         setAddresses(response);
+        setReloadAdress(false);
       })();
-    }, [])
+    }, [reloadAddress])
   );
 
   return (
@@ -44,7 +47,7 @@ export default function Addresses() {
       ) : size(addresses) === 0 ? (
         <Text style={styles.noAddressText}>Crea tu primera dirección</Text>
       ) : (
-        <AddressList addresses={addresses} />
+        <AddressList addresses={addresses} setReloadAdress={setReloadAdress} />
       )}
     </ScrollView>
   );
