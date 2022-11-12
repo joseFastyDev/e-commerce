@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text, Alert } from "react-native";
 import { Button } from "react-native-paper";
 import { map } from "lodash";
+import { useNavigation } from "@react-navigation/native";
 import useAuth from "../../hooks/useAuth";
 import { formStyle } from "../../styles";
 import { deleteAddressApi } from "../../api/address";
@@ -9,6 +10,7 @@ import { deleteAddressApi } from "../../api/address";
 export default function AddressList(props) {
   const { addresses, setReloadAdress } = props;
   const { auth } = useAuth();
+  const navigation = useNavigation();
 
   const deleteAddressAlert = (address) => {
     Alert.alert(
@@ -25,6 +27,10 @@ export default function AddressList(props) {
       ],
       { cancelable: false }
     );
+  };
+
+  const goToUpdateAddress = (idAddress) => {
+    navigation.navigate("add-address", { idAddress });
   };
 
   const deleteAddress = async (idAddress) => {
@@ -51,7 +57,11 @@ export default function AddressList(props) {
           <Text>{address.country}</Text>
           <Text>Numero de telefono: {address.phone}</Text>
           <View style={styles.actions}>
-            <Button mode="contained" style={formStyle.btnSuccess}>
+            <Button
+              mode="contained"
+              style={formStyle.btnSuccess}
+              onPress={() => goToUpdateAddress(address._id)}
+            >
               Editar
             </Button>
             <Button

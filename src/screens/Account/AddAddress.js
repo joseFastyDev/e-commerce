@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -6,13 +6,35 @@ import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import useAuth from "../../hooks/useAuth";
-import { addAddressApi } from "../../api/address";
+import { addAddressApi, getAddressApi } from "../../api/address";
 import { formStyle } from "../../styles";
 
-export default function AddAddress() {
+export default function AddAddress(props) {
+  const {
+    route: { params },
+  } = props;
   const [loading, setLoading] = useState(false);
   const { auth } = useAuth();
   const navigation = useNavigation();
+  console.log(params);
+
+  useEffect(() => {
+    (async () => {
+      if (params?.idAdress) {
+        const response = await getAddressApi(auth, params.idAddress);
+        console.log(response);
+        await formik.setFieldValue("_id", response._id);
+        await formik.setFieldValue("title", response.title);
+        await formik.setFieldValue("name_lastname", response.name_lastname);
+        await formik.setFieldValue("address", response.address);
+        await formik.setFieldValue("postal_code", response.postal_code);
+        await formik.setFieldValue("city", response.city);
+        await formik.setFieldValue("state", response.state);
+        await formik.setFieldValue("country", response.country);
+        await formik.setFieldValue("phone", response.phone);
+      }
+    })();
+  }, [params]);
 
   const formik = useFormik({
     initialValues: initialValues(),
