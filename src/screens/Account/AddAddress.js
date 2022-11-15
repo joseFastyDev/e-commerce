@@ -6,7 +6,11 @@ import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import useAuth from "../../hooks/useAuth";
-import { addAddressApi, getAddressApi } from "../../api/address";
+import {
+  addAddressApi,
+  getAddressApi,
+  updateAddressApi,
+} from "../../api/address";
 import { formStyle } from "../../styles";
 
 export default function AddAddress(props) {
@@ -14,15 +18,16 @@ export default function AddAddress(props) {
     route: { params },
   } = props;
   const [loading, setLoading] = useState(false);
+  const [newAddress, setNewAddress] = useState(true);
   const { auth } = useAuth();
   const navigation = useNavigation();
-  console.log(params);
 
   useEffect(() => {
     (async () => {
-      if (params?.idAdress) {
+      if (params?.idAddress) {
+        setNewAddress(false);
+        navigation.setOptions({ title: "Actualizar dirección" });
         const response = await getAddressApi(auth, params.idAddress);
-        console.log(response);
         await formik.setFieldValue("_id", response._id);
         await formik.setFieldValue("title", response.title);
         await formik.setFieldValue("name_lastname", response.name_lastname);
@@ -42,7 +47,8 @@ export default function AddAddress(props) {
     onSubmit: async (formData) => {
       setLoading(true);
       try {
-        await addAddressApi(auth, formData);
+        if (newAddress) await addAddressApi(auth, formData);
+        else await updateAddressApi(auth, formData);
         navigation.goBack();
       } catch (error) {
         console.log(error);
@@ -117,7 +123,7 @@ export default function AddAddress(props) {
           onPress={formik.handleSubmit}
           loading={loading}
         >
-          Crear dirección
+          {newAddress ? "Crear dirección" : "Actualizar dirección"}
         </Button>
       </View>
     </KeyboardAwareScrollView>
