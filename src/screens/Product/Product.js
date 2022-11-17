@@ -5,6 +5,9 @@ import Search from "../../components/Search";
 import ScreenLoading from "../../components/ScreenLoading";
 import CarouselImages from "../../components/Product/CarouselImages";
 import Price from "../../components/Product/Price";
+import Quantity from "../../components/Product/Quantity";
+import Buy from "../../components/Product/Buy";
+import Favorite from "../../components/Product/Favorite";
 import { getProductApi } from "../../api/product";
 import colors from "../../styles/colors";
 
@@ -13,6 +16,7 @@ export default function Product(props) {
   const { params } = route;
   const [product, setProduct] = useState(null);
   const [images, setImages] = useState([]);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     (async () => {
@@ -37,6 +41,9 @@ export default function Product(props) {
           <CarouselImages images={images} />
           <View style={styles.containerView}>
             <Price price={product.price} discount={product.discount} />
+            <Quantity quantity={quantity} setQuantity={setQuantity} />
+            <Buy product={product} quantity={quantity} />
+            <Favorite product={product} />
           </View>
         </ScrollView>
       )}
