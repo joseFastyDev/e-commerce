@@ -10,12 +10,15 @@ import {
   animatedTransitionReset,
   arrowAnimation,
 } from "./SearchAnimation";
+import { updateSearchHistoryApi } from "../../api/search";
 import SearchHistory from "./SearchHistory";
 import colors from "../../styles/colors";
 
-export default function Search() {
-  const [searchQuery, setSearchQuery] = useState("");
+export default function Search(props) {
+  const { currentSearch } = props;
+  const [searchQuery, setSearchQuery] = useState(currentSearch || "");
   const [showHistory, setShowHistory] = useState(false);
+  const [containerHeight, setContainerHeight] = useState(0);
   const navigation = useNavigation();
 
   const openSearch = () => {
@@ -33,15 +36,23 @@ export default function Search() {
     setSearchQuery(query);
   };
 
-  const onSearch = () => {
+  const onSearch = async (reuseSearh) => {
+    const isReuse = typeof reuseSearh === "string";
+
     closeSearch();
+
+    !isReuse && (await updateSearchHistoryApi(searchQuery));
+
     navigation.push("search", {
-      search: searchQuery,
+      search: isReuse ? reuseSearh : searchQuery,
     });
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      onLayout={(e) => setContainerHeight(e.nativeEvent.layout.height)}
+    >
       <View style={styles.containerInput}>
         <AnimatedIcon
           name="arrow-left"
@@ -60,7 +71,11 @@ export default function Search() {
           />
         </Animated.View>
       </View>
-      <SearchHistory showHistory={showHistory} />
+      <SearchHistory
+        showHistory={showHistory}
+        containerHeight={containerHeight}
+        onSearch={onSearch}
+      />
     </View>
   );
 }
