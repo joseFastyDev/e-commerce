@@ -6,7 +6,7 @@ export default function ResultNotFound(props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.searchText}>No hay resultados apra {search}.</Text>
+      <Text style={styles.searchText}>No hay resultados para {search}.</Text>
       <Text style={styles.otherText}>
         Revisa la ortografía o usa términos más generales.
       </Text>
