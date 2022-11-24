@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Keyboard, Animated } from "react-native";
 import { Searchbar } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   AnimatedIcon,
   inputAnimationWidth,
@@ -20,6 +20,7 @@ export default function Search(props) {
   const [showHistory, setShowHistory] = useState(false);
   const [containerHeight, setContainerHeight] = useState(0);
   const navigation = useNavigation();
+  const route = useRoute();
 
   const openSearch = () => {
     animatedTransition.start();
@@ -43,9 +44,15 @@ export default function Search(props) {
 
     !isReuse && (await updateSearchHistoryApi(searchQuery));
 
-    navigation.push("search", {
-      search: isReuse ? reuseSearh : searchQuery,
-    });
+    if (route.name === "search") {
+      navigation.push("search", {
+        search: isReuse ? reuseSearh : searchQuery,
+      });
+    } else {
+      navigation.navigate("search", {
+        search: isReuse ? reuseSearh : searchQuery,
+      });
+    }
   };
 
   return (

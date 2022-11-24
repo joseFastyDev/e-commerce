@@ -17,8 +17,14 @@ export default function ProductList(props) {
   const { products } = props;
   const navigation = useNavigation();
 
-  const getToProduct = (id) => {
-    console.log("Cargar producto -> " + id);
+  const calcPrice = (price, discount) => {
+    if (!discount) return price;
+
+    const discountAmount = (price * discount) / 100;
+    return (price - discountAmount).toFixed(2);
+  };
+
+  const goToProduct = (id) => {
     navigation.push("product", { idProduct: id });
   };
 
@@ -28,7 +34,7 @@ export default function ProductList(props) {
       {map(products, (product) => (
         <TouchableWithoutFeedback
           key={product._id}
-          onPress={() => getToProduct(product._id)}
+          onPress={() => goToProduct(product._id)}
         >
           <View style={styles.product}>
             <View style={styles.containerImage}>
@@ -36,6 +42,23 @@ export default function ProductList(props) {
                 style={styles.image}
                 source={{ uri: `${API_URL}${product.main_image.url}` }}
               />
+            </View>
+
+            <View style={styles.info}>
+              <Text style={styles.name} numberOfLines={3} ellipsizeMode="tail">
+                {product.title}
+              </Text>
+              <View style={styles.prices}>
+                <Text style={styles.currentPrice}>
+                  $ {calcPrice(product.price, product.discount)}
+                </Text>
+                {product.discount && (
+                  <Text style={styles.oldPrice}>$ {product.price}</Text>
+                )}
+              </View>
+              <Button style={styles.btn} color={colors.primary}>
+                Ver producto
+              </Button>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -71,5 +94,36 @@ const styles = StyleSheet.create({
     height: 200,
     backgroundColor: "#ebebeb",
     padding: 5,
+  },
+  image: {
+    height: "100%",
+    resizeMode: "contain",
+  },
+  info: {
+    padding: 10,
+    width: "60%",
+  },
+  name: {
+    fontSize: 16,
+  },
+  prices: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    marginTop: 5,
+  },
+  currentPrice: {
+    fontSize: 16,
+  },
+  oldPrice: {
+    marginLeft: 7,
+    fontSize: 14,
+    color: "#747474",
+    textDecorationLine: "line-through",
+  },
+  btn: {
+    position: "absolute",
+    bottom: 5,
+    left: 0,
+    right: 0,
   },
 });
