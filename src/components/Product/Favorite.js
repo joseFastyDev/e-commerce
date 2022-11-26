@@ -4,9 +4,20 @@ import { Button } from "react-native-paper";
 
 export default function Favorite(props) {
   const { product } = props;
-  const addFavorite = () => {
-    console.log("Producto añadido a la lista de favoritos");
-    console.log(product.title);
+  const [isFavorite, setIsFavorite] = useState(undefined);
+  const [loading, setLoading] = useState(false);
+
+  const addFavorite = async () => {
+    if (!loading) {
+      setLoading(true);
+      try {
+        await addFavoriteApi(auth, product._id);
+        setIsFavorite(true);
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    }
   };
   return (
     <Button
@@ -15,6 +26,7 @@ export default function Favorite(props) {
       labelStyle={styles.btnLabel}
       style={styles.btn}
       onPress={addFavorite}
+      loading={loading}
     >
       Añadir a favoritos
     </Button>
